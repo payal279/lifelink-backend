@@ -50,3 +50,18 @@ app.get("/error", (req, res) => {
 app.listen(3000, () => {
     console.log("Server running on port 3000");
 });
+
+//const express = require("express");
+//const app = express();
+
+const donor = require("./donor");
+const hospital = require("./hospital");
+const patient = require("./patient");
+
+app.use("/donor", donor);
+app.use("/hospital", hospital);
+app.use("/patient", patient);
+
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
+});
