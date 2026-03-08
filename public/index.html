@@ -1,2 +1,104 @@
-<h1>LifeLink Organ Donation System</h1>
-<p>This is static page served by Node.js</p>
+<!DOCTYPE html>
+<html>
+<head>
+<title>LifeLink Organ Donation System</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+background: linear-gradient(135deg,#6dd5fa,#2980b9);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.container{
+background:white;
+padding:40px;
+border-radius:12px;
+width:450px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+h1{
+color:#2c3e50;
+margin-bottom:10px;
+}
+
+p{
+color:#555;
+margin-bottom:25px;
+}
+
+.btn{
+display:block;
+width:100%;
+padding:12px;
+margin:10px 0;
+border:none;
+border-radius:6px;
+background:#27ae60;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.btn:hover{
+background:#1e8449;
+transform:scale(1.05);
+}
+
+.footer{
+margin-top:20px;
+font-size:13px;
+color:#888;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>LifeLink</h1>
+<p>Organ Donation Management Backend Demo</p>
+
+<button class="btn" onclick="window.location='/donor'">
+View Donor Data
+</button>
+
+<button class="btn" onclick="window.location='/hospital'">
+Hospital Endpoint
+</button>
+
+<button class="btn" onclick="window.location='/stream'">
+Stream HTML Page
+</button>
+
+<button class="btn" onclick="window.location='/about'">
+About Page
+</button>
+
+<button class="btn" onclick="window.location='/error'">
+Test Error Handling
+</button>
+
+<div class="footer">
+Node.js + Express Backend Project
+</div>
+
+</div>
+
+</body>
+</html>
