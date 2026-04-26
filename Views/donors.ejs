@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Donor List</title>
+</head>
+<body>
+
+<h1>Available Donors</h1>
+
+<ul>
+  <% donors.forEach(donor => { %>
+    <li>
+      <%= donor.name %> - <%= donor.blood %>
+    </li>
+  <% }) %>
+</ul>
+
+</body>
+</html>

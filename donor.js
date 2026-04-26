@@ -1,5 +1,7 @@
-function getDonors() {
-    return ["Rahul", "Priya", "Aman"];
+export default function getDonors() {
+  return [
+    { name: "Payal", blood: "A+" },
+    { name: "Rahul", blood: "O+" },
+    { name: "Sneha", blood: "B+" }
+  ];
 }
-
-module.exports = getDonors;
