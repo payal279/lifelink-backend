@@ -6,9 +6,7 @@ import User from "../models/User.js";
 const router = express.Router();
 const SECRET_KEY = "lifelink_secret";
 
-/* =========================
-   REGISTER
-========================= */
+/*REGISTER*/
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -42,9 +40,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-/* =========================
-   JWT LOGIN
-========================= */
+/*JWT LOGIN*/
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -86,9 +82,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-/* =========================
-   SESSION LOGIN
-========================= */
+/*SESSION LOGIN*/
 router.post("/session-login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -127,9 +121,7 @@ router.post("/session-login", async (req, res) => {
   }
 });
 
-/* =========================
-   SESSION PROFILE
-========================= */
+/*SESSION PROFILE*/
 router.get("/session-profile", (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({
@@ -142,9 +134,7 @@ router.get("/session-profile", (req, res) => {
   });
 });
 
-/* =========================
-   SESSION LOGOUT
-========================= */
+/*SESSION LOGOUT*/
 router.get("/session-logout", (req, res) => {
   req.session.destroy(() => {
     res.json({

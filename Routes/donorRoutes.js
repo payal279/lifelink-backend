@@ -3,17 +3,13 @@ import Donor from "../models/Donor.js";
 
 const router = express.Router();
 
-/* =============================
-   ROUTER MIDDLEWARE
-============================= */
+/*ROUTER MIDDLEWARE*/
 router.use((req, res, next) => {
   console.log("Donor Route Hit:", req.method, req.url);
   next();
 });
 
-/* =============================
-   GET ALL DONORS
-============================= */
+/*GET ALL DONORS*/
 router.get("/", async (req, res) => {
   try {
     const donors = await Donor.find().sort({ createdAt: -1 });
@@ -26,9 +22,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-/* =============================
-   GET SINGLE DONOR BY ID
-============================= */
+/*GET SINGLE DONOR BY ID*/
 router.get("/:id", async (req, res) => {
   try {
     const donor = await Donor.findById(req.params.id);
@@ -48,9 +42,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-/* =============================
-   POST NEW DONOR
-============================= */
+/* POST NEW DONOR */
 router.post("/", async (req, res) => {
   try {
     const { name, blood, city } = req.body;
@@ -82,9 +74,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-/* =============================
-   UPDATE DONOR
-============================= */
+/*UPDATE DONOR*/
 router.put("/:id", async (req, res) => {
   try {
     const updatedDonor = await Donor.findByIdAndUpdate(
@@ -112,9 +102,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-/* =============================
-   DELETE DONOR
-============================= */
+/*DELETE DONOR */
 router.delete("/:id", async (req, res) => {
   try {
     const deletedDonor = await Donor.findByIdAndDelete(req.params.id);
