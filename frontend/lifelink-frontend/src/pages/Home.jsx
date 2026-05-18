@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+// Use the same backend URL as registration/login
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+// Connect Socket.IO to backend
+const socket = io(API_URL);
 
 function Home() {
   const navigate = useNavigate();
@@ -17,23 +21,29 @@ function Home() {
   });
 
   /* Fetch Donors */
-  const fetchDonors = () => {
-    fetch("http://localhost:3000/donor")
-      .then((res) => res.json())
-      .then((data) => setDonors(data))
-      .catch((err) => console.log(err));
+  const fetchDonors = async () => {
+    try {
+      const res = await fetch(`${API_URL}/donor`);
+      const data = await res.json();
+      setDonors(data);
+    } catch (err) {
+      console.error("Error fetching donors:", err);
+    }
   };
 
   useEffect(() => {
+    // Initial data load
     fetchDonors();
 
-    /* Listen Socket Messages */
+    // Listen for real-time messages from backend
     socket.on("message", (msg) => {
       setLiveMsg(msg);
-      fetchDonors();
+      fetchDonors(); // Refresh donor list automatically
     });
 
-    return () => socket.off("message");
+    return () => {
+      socket.off("message");
+    };
   }, []);
 
   /* Input Change */
@@ -48,30 +58,37 @@ function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:3000/donor", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(form)
-    });
+    try {
+      const res = await fetch(`${API_URL}/donor`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(form)
+      });
 
-    const data = await res.json();
-    alert(data.message);
+      const data = await res.json();
+      alert(data.message || "Donor Registered Successfully");
 
-    /* Emit Live Message */
-    socket.emit(
-      "chat-message",
-      `New Donor Registered: ${form.name} ❤️`
-    );
+      // Send socket message so all connected clients update instantly
+      socket.emit(
+        "chat-message",
+        `New Donor Registered: ${form.name} ❤️`
+      );
 
-    setForm({
-      name: "",
-      blood: "",
-      city: ""
-    });
+      // Reset form
+      setForm({
+        name: "",
+        blood: "",
+        city: ""
+      });
 
-    fetchDonors();
+      // Refresh donor list immediately
+      fetchDonors();
+    } catch (error) {
+      console.error("Donor Registration Error:", error);
+      alert("Failed to register donor");
+    }
   };
 
   return (
@@ -182,7 +199,10 @@ function Home() {
 
         <div className="story-grid">
           {donors.map((donor) => (
-            <div className="story-card" key={donor._id}>
+            <div
+              className="story-card"
+              key={donor.id || donor._id}
+            >
               <p><strong>Name:</strong> {donor.name}</p>
               <p><strong>Blood:</strong> {donor.blood}</p>
               <p><strong>City:</strong> {donor.city}</p>

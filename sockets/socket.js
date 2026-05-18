@@ -1,27 +1,22 @@
-// sockets/socket.js
-import { Server } from "socket.io";
-
 const setupSocket = (server) => {
+  const { Server } = await import("socket.io");
+
   const io = new Server(server, {
     cors: {
-      origin: "*",
-      methods: ["GET", "POST"]
-    }
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST"],
+    },
   });
 
   io.on("connection", (socket) => {
-    console.log("User Connected:", socket.id);
-
-    socket.emit("message", "Welcome to LifeLink Live Server ✅");
-
-    socket.on("chat-message", (msg) => {
-      io.emit("message", msg);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("User Disconnected:", socket.id);
-    });
+    console.log("User connected:", socket.id);
   });
+
+  // Make io available in controllers
+  server.on("request", (req, res) => {});
+  server.app?.set?.("io", io);
+
+  return io;
 };
 
 export default setupSocket;

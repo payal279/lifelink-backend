@@ -21,6 +21,9 @@ import pageRoutes from "./routes/pageRoutes.js";
 import cookieRoutes from "./routes/cookieRoutes.js";
 import sessionRoutes from "./routes/sessionRoutes.js";
 
+import postgresDonorRoutes from "./Routes/postgresDonorRoutes.js";
+import uploadRoutes from "./Routes/uploadRoutes.js";
+
 const app = express();
 const server = createServer(app);
 
@@ -36,10 +39,19 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 /* Global Middleware */
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use("/", postgresDonorRoutes);
+app.use("/", uploadRoutes);
 
 app.use(
   session({
@@ -47,8 +59,8 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: 60000
-    }
+      maxAge: 60000,
+    },
   })
 );
 
@@ -69,7 +81,7 @@ app.use("/auth", authRoutes);
 app.get("/profile", auth, (req, res) => {
   res.json({
     message: "Protected Profile Data",
-    user: req.user
+    user: req.user,
   });
 });
 
@@ -77,6 +89,7 @@ app.get("/profile", auth, (req, res) => {
 app.use(errorHandler);
 
 /* Socket Setup */
-setupSocket(server);
+const io = setupSocket(server);
+app.set("io", io);
 
 export default server;

@@ -23,20 +23,29 @@ function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(form)
-      });
+      // Backend route in app.js:
+      // app.use("/auth", authRoutes);
+      // So correct endpoint is:
+      // http://localhost:3000/auth/login
+
+      const res = await fetch(
+  `${import.meta.env.VITE_API_URL}/auth/login`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(form)
+  }
+);
 
       const data = await res.json();
 
       if (data.token) {
+        // Save JWT token
         localStorage.setItem("token", data.token);
 
-        /* Save user info */
+        // Save user info
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -51,10 +60,11 @@ function Login() {
         alert(data.message || "Login Failed");
       }
     } catch (error) {
+      console.error("Login Error:", error);
       alert("Server Error");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
