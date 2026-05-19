@@ -21,12 +21,20 @@ export const getAllDonors = async (req, res) => {
 // CREATE DONOR
 export const createDonor = async (req, res) => {
   try {
-    const { name, blood, city } = req.body;
+    const { name, age, bloodGroup, phone, city } = req.body;
+
+    if (!name || !age || !bloodGroup || !phone || !city) {
+      return res.status(400).json({
+        message: "All fields are required (name, age, bloodGroup, phone, city)",
+      });
+    }
 
     const donor = await prisma.donor.create({
       data: {
         name,
-        bloodGroup: blood, // Prisma field name
+        age: parseInt(age),
+        bloodGroup,
+        phone,
         city,
       },
     });

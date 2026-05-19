@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../Models/User.js";
 
 const router = express.Router();
-const SECRET_KEY = "lifelink_secret";
+const SECRET_KEY = process.env.JWT_SECRET || "lifelink_secret";
 
 /*REGISTER*/
 router.post("/register", async (req, res) => {

@@ -1,5 +1,5 @@
 // controllers/donorController.js
-import Donor from "../models/Donor.js";
+import Donor from "../Models/Donor.js";
 
 export const getDonors = async (req, res) => {
   const donors = await Donor.find();

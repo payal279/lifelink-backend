@@ -50,7 +50,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/", postgresDonorRoutes);
+app.use("/pg-donors", postgresDonorRoutes);
 app.use("/", uploadRoutes);
 
 app.use(

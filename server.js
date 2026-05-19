@@ -1,3 +1,4 @@
+import "dotenv/config";
 import server from "./app.js";
 
 // Use Render's PORT
