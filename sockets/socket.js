@@ -1,6 +1,6 @@
-const setupSocket = (server) => {
-  const { Server } = await import("socket.io");
+import { Server } from "socket.io";
 
+const setupSocket = (server) => {
   const io = new Server(server, {
     cors: {
       origin: "http://localhost:5173",
@@ -10,11 +10,19 @@ const setupSocket = (server) => {
 
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
-  });
 
-  // Make io available in controllers
-  server.on("request", (req, res) => {});
-  server.app?.set?.("io", io);
+    // Listen for messages from frontend
+    socket.on("chat-message", (msg) => {
+      console.log("Message received:", msg);
+
+      // Broadcast to all connected clients
+      io.emit("message", msg);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("User disconnected:", socket.id);
+    });
+  });
 
   return io;
 };

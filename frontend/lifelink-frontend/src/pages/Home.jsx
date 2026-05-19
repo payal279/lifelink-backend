@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
-// Use the same backend URL as registration/login
+// Backend URL from frontend .env
+// frontend/lifelink-frontend/.env
+// VITE_API_URL=http://localhost:5000
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-// Connect Socket.IO to backend
+// Socket.IO connection
 const socket = io(API_URL);
 
 function Home() {
@@ -20,33 +22,48 @@ function Home() {
     city: ""
   });
 
-  /* Fetch Donors */
+  /* Fetch all donors from backend */
   const fetchDonors = async () => {
     try {
       const res = await fetch(`${API_URL}/donor`);
       const data = await res.json();
-      setDonors(data);
+
+      // If backend returns an array, update state
+      if (Array.isArray(data)) {
+        setDonors(data);
+      } else {
+        setDonors([]);
+      }
     } catch (err) {
       console.error("Error fetching donors:", err);
+      setDonors([]);
     }
   };
 
+  /* Real-time Socket.IO listeners */
   useEffect(() => {
-    // Initial data load
+    // Load donors on page load
     fetchDonors();
 
-    // Listen for real-time messages from backend
+    // Live message from backend
     socket.on("message", (msg) => {
       setLiveMsg(msg);
-      fetchDonors(); // Refresh donor list automatically
+      fetchDonors();
     });
 
+    // Donor count updated event
+    socket.on("donorCountUpdated", () => {
+      fetchDonors();
+    });
+
+    // Cleanup listeners when component unmounts
     return () => {
       socket.off("message");
+      socket.off("donorCountUpdated");
     };
   }, []);
 
-  /* Input Change */
+  /* Handle input changes */
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -54,7 +71,7 @@ function Home() {
     });
   };
 
-  /* Submit Donor */
+  /* Submit donor registration */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -68,9 +85,17 @@ function Home() {
       });
 
       const data = await res.json();
-      alert(data.message || "Donor Registered Successfully");
 
-      // Send socket message so all connected clients update instantly
+      // IMPORTANT: show actual backend error if request failed
+      if (!res.ok) {
+        alert(data.message || "Failed to register donor");
+        return;
+      }
+
+      // Success
+      alert(data.message || "Donor Registered Successfully ✅");
+
+      // Emit socket message (optional, backend also emits)
       socket.emit(
         "chat-message",
         `New Donor Registered: ${form.name} ❤️`
@@ -87,13 +112,13 @@ function Home() {
       fetchDonors();
     } catch (error) {
       console.error("Donor Registration Error:", error);
-      alert("Failed to register donor");
+      alert(error.message || "Failed to register donor");
     }
   };
 
   return (
     <>
-      {/* Hero */}
+      {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
           <p className="tagline">Give Life Through Donation</p>
@@ -108,7 +133,7 @@ function Home() {
             Together we can create hope, healing and second chances.
           </p>
 
-          {/* Live Message */}
+          {/* Live real-time message */}
           {liveMsg && (
             <div className="live-box">
               🔴 {liveMsg}
@@ -137,7 +162,7 @@ function Home() {
         </div>
       </section>
 
-      {/* Donor Form */}
+      {/* Donor Registration Form */}
       <section className="section register" id="register-section">
         <h2>Register as Donor</h2>
 
@@ -175,7 +200,7 @@ function Home() {
         </form>
       </section>
 
-      {/* Stats */}
+      {/* Statistics */}
       <section className="section stats">
         <div className="stat-card">
           <h3>500+</h3>
@@ -203,9 +228,18 @@ function Home() {
               className="story-card"
               key={donor.id || donor._id}
             >
-              <p><strong>Name:</strong> {donor.name}</p>
-              <p><strong>Blood:</strong> {donor.blood}</p>
-              <p><strong>City:</strong> {donor.city}</p>
+              <p>
+                <strong>Name:</strong> {donor.name}
+              </p>
+
+              <p>
+                <strong>Blood:</strong>{" "}
+                {donor.bloodGroup || donor.blood}
+              </p>
+
+              <p>
+                <strong>City:</strong> {donor.city}
+              </p>
             </div>
           ))}
         </div>
