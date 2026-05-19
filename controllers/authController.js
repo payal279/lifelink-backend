@@ -79,7 +79,7 @@ export const login = async (req, res) => {
         id: user.id,
         email: user.email,
       },
-      process.env.JWT_SECRET || "lifelink_secret",
+      process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       }
