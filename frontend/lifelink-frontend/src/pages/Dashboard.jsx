@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function Dashboard() {
   const navigate = useNavigate();
 
@@ -21,7 +23,7 @@ function Dashboard() {
     }
 
     /* Protected backend route */
-    fetch("http://localhost:3000/profile", {
+    fetch(`${API_URL}/profile`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
