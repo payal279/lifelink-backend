@@ -13,13 +13,13 @@ import auth from "./middleware/authMiddleware.js";
 
 import setupSocket from "./sockets/socket.js";
 
-import donorRoutes from "./routes/donorRoutes.js";
-import hospitalRoutes from "./routes/hospitalRoutes.js";
-import patientRoutes from "./routes/patientRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
-import pageRoutes from "./routes/pageRoutes.js";
-import cookieRoutes from "./routes/cookieRoutes.js";
-import sessionRoutes from "./routes/sessionRoutes.js";
+import donorRoutes from "./Routes/donorRoutes.js";
+import hospitalRoutes from "./Routes/hospitalRoutes.js";
+import patientRoutes from "./Routes/patientRoutes.js";
+import authRoutes from "./Routes/authRoutes.js";
+import pageRoutes from "./Routes/pageRoutes.js";
+import cookieRoutes from "./Routes/cookieRoutes.js";
+import sessionRoutes from "./Routes/sessionRoutes.js";
 
 import postgresDonorRoutes from "./Routes/postgresDonorRoutes.js";
 import uploadRoutes from "./Routes/uploadRoutes.js";
@@ -55,7 +55,7 @@ app.use("/", uploadRoutes);
 
 app.use(
   session({
-    secret: "lifelinksecret",
+    secret: process.env.SESSION_SECRET || "lifelinksecret",
     resave: false,
     saveUninitialized: true,
     cookie: {

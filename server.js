@@ -1,18 +1,4 @@
-import express from "express";
-import http from "http";
-import { Server } from "socket.io";
-
-const app = express();
-
-// Create HTTP server
-const server = http.createServer(app);
-
-// Attach Socket.IO
-const io = new Server(server, {
-  cors: {
-    origin: "*"
-  }
-});
+import server from "./app.js";
 
 // Use Render's PORT
 const PORT = process.env.PORT || 5000;
