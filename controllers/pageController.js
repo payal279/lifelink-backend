@@ -1,9 +1,16 @@
 // controllers/pageController.js
 import fs from "fs";
 import path from "path";
+import Donor from "../Models/Donor.js";
 
-export const home = (req, res) => {
-  res.send("Welcome to LifeLink Organ Donation System");
+export const home = async (req, res) => {
+  try {
+    const donors = await Donor.find() || [];
+    res.render("home", { donors });
+  } catch (err) {
+    console.error("EJS Home Render Error:", err);
+    res.render("home", { donors: [] });
+  }
 };
 
 export const fileData = (req, res) => {
